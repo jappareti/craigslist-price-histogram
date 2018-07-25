@@ -1,0 +1,45 @@
+.noUi-horizontal {
+  height: 2px;
+  border: none;
+  box-shadow: none;
+  background: hsl(0, 0%, 87%);
+  top: 7px;
+  margin-right: 14px;
+}
+
+.noUi-connect {
+  background: hsla(249, 100%, 76%, 1);
+}
+
+.noUi-handle {
+  box-shadow: none;
+  border: 1px solid hsla(249, 100%, 76%, 1);
+  cursor: pointer;
+  border-radius: 12px;
+}
+
+.noUi-handle:focus {
+  outline: none;
+}
+.noUi-horizontal .noUi-handle {
+  height: 18px;
+  width: 18px;
+  top: -8px;
+}
+
+.noUi-handle:before,
+.noUi-handle:after {
+  display: none;
+}
+.noUi-horizontal .noUi-tooltip {
+  bottom: -117%;
+}
+.noUi-tooltip {
+  display: none;
+  font-size: 70%;
+  border: none;
+  padding-top: 2px;
+}
+.noUi-active .noUi-tooltip {
+  display: block;
+}

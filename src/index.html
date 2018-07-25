@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Craiglist Histogram</title>
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .search-form {
+      position: relative;
+    }
+
+    .search-options-container {
+      height: 100%;
+      left: 0;
+      margin: 0;
+      overflow-y: scroll;
+      position: fixed;
+      top: 3em;
+      width: 220px;
+      background-color: #FFF;
+      border-bottom: 0;
+      float: left;
+      font-size: .9em;
+      padding: 0 .625em 1em .5em;
+
+    }
+
+    .searchgroup {
+      margin-left: 4px;
+    }
+
+    .searchgroup .searchfieldlabel {
+      font-size: 70%;
+      text-transform: uppercase;
+      display: block;
+    }
+
+    .flatinput {
+      border: 1px solid #ccc;
+      -webkit-border-radius: 3px;
+      -moz-border-radius: 3px;
+      border-radius: 3px;
+      margin: 0;
+      padding: 2px;
+    }
+
+    .minmax input {
+      width: 4em;
+    }
+
+    .minmax p {
+      margin: 2px 0px;
+    }
+  </style>
+</head>
+
+<body>
+  <form id="searchform" class="search-form">
+
+    <div class="search-options-container">
+      <div class="search-options">
+        <div class="searchgroup minmax ">
+          <span class="searchfieldlabel">price</span>
+          <input type="tel" name="min_price" class="flatinput min" placeholder="min" title="whole number, no letters or symbols" value="">
+          <input type="tel" name="max_price" class="flatinput max" placeholder="max" title="whole number, no letters or symbols" value="">
+        </div>
+      </div>
+    </div>
+  </form>
+
+
+</body>
