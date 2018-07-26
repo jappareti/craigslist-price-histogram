@@ -1,5 +1,6 @@
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const { resolve } = require("path");
 const webpackMerge = require("webpack-merge");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 
@@ -9,14 +10,30 @@ module.exports = ({ mode } = { mode: "production" }) => {
   return webpackMerge(
     {
       mode,
-      output: { filename: "bundle.js" },
+      entry: { "price-graph": "./src/index.js" },
+      output: {
+        publicPath: ".",
+        path: resolve(__dirname, "dist/"),
+        filename: "[name].js",
+        libraryTarget: "umd"
+      },
+      // output: { filename: "bundle.js" },
       plugins: [
-        new HtmlWebpackPlugin({
-          template: "./src/index.html",
-          filename: "index.html",
-          inject: "body"
-        }),
-        new CopyWebpackPlugin([{ from: "data" }])
+        new CopyWebpackPlugin([
+          {
+            from: "src/manifest.json",
+            transform: function(content, path) {
+              // generates the manifest file using the package.json informations
+              return Buffer.from(
+                JSON.stringify({
+                  description: process.env.npm_package_description,
+                  version: process.env.npm_package_version,
+                  ...JSON.parse(content.toString())
+                })
+              );
+            }
+          }
+        ])
       ]
     },
     modeConfig(mode)

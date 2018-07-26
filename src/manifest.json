@@ -1,0 +1,14 @@
+{
+  "name": "Craigslist Chrome Extension",
+  "manifest_version": 2,
+  "content_scripts": [
+    {
+      "matches": ["https://*.craigslist.org/*"],
+      "run_at": "document_idle",
+      "css": ["price-graph.css"],
+      "js": ["price-graph.js"]
+    }
+  ],
+  "content_security_policy":
+    "script-src 'self' 'unsafe-eval'; object-src 'self'"
+}
