@@ -29,40 +29,34 @@ const height = 70;
 const width = 171;
 const margin = { top: 0, right: 5, bottom: 0, left: 5 };
 
-function getData(path) {
-  const searchParams = window.location.search
-    ? path.match(/\?.*/)[0].replace("?", "&")
-    : "";
-  return d3
-    .json(path)
-    .then(function(d) {
-      const prices = d[0]
-        .filter(d => d.hasOwnProperty("Ask") && d.Ask !== "")
-        .map(d => d.Ask);
-      const clusters = d[0]
-        .filter(d => d.hasOwnProperty("url"))
-        .map(d => d.url);
-      const clusterPromises = clusters.map(cluster =>
-        getData(cluster + searchParams)
-      );
-      if (clusters.length > 0) {
-        Promise.all(clusterPromises)
-          .then(values => {
-            console.log("finished getting price values of clusters");
-            prices.push(values);
-          })
-          .catch(function(error) {
-            console.log(error);
-          });
-      }
-      return prices.flat(5);
-    })
-    .catch(function(error) {
-      console.log(error);
-    });
+async function getData(path) {
+  let searchParams = "";
+  if (window.location.search) {
+    searchParams = path.match(/\?.*/)[0].replace("?", "&");
+  }
+  const firstResult = await d3.json(path).then(result => result);
+  let prices = firstResult[0]
+    .filter(d => d.hasOwnProperty("Ask") && d.Ask !== "")
+    .map(d => d.Ask);
+  const clusters = firstResult[0]
+    .filter(d => d.hasOwnProperty("url"))
+    .map(d => d.url);
+
+  if (clusters.length > 0) {
+    const clusterPromises = clusters.map(cluster =>
+      getData(cluster + searchParams)
+    );
+    const clusterPrices = await Promise.all(clusterPromises)
+      .then(values => values)
+      .catch(console.error);
+    return [...prices, ...clusterPrices.flat()];
+  } else {
+    return prices;
+  }
 }
 
 function initChart(data, priceFilterDiv, minPriceValue, maxPriceValue) {
+  console.log(data);
   // Add average label
   const avg = _
     .mean(data)
