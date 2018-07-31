@@ -55,13 +55,66 @@ async function getData(path) {
   }
 }
 
-function initChart(data, priceFilterDiv, minPriceValue, maxPriceValue) {
+function addCreateChartBtn(chartDiv) {
+  const chartBtn = chartDiv
+    .append("a")
+    .attr("class", "create-price-chart-btn")
+    .attr(
+      "title",
+      "Create a price chart graph. This link was injected by the Craigslist Price Chart Extension."
+    )
+    .text("create price chart");
+  return chartBtn;
+}
+
+function addBlankChartContainer(priceFilterDiv) {
+  const chartDiv = priceFilterDiv
+    .append("div")
+    .attr("class", "cl-extension-chart loading");
+
+  chartDiv
+    .append("p")
+    .attr("class", "loading")
+    .append("em")
+    .text("Loading price graph...");
+
+  return chartDiv;
+}
+
+function getCleanedJsonUrl(url) {
+  return (
+    url
+      .replace("search", "jsonsearch")
+      .replace("apa/", "apa?")
+      .replace(/&(min_price)=\d*/, "")
+      .replace(/&(max_price)=\d*/, "") + "&map=1"
+  );
+}
+
+async function initChart() {
+  const priceFilterDiv = d3.select(".minmax");
+  const chartDiv = addBlankChartContainer(priceFilterDiv);
+
+  const url = window.location.href;
+  const jsonUrl = getCleanedJsonUrl(url);
+  const minPriceValue = url.match(/(min_price=)(\d*)/);
+  const maxPriceValue = url.match(/(max_price=)(\d*)/);
+
+  const priceData = await getData(jsonUrl)
+    .then(data => data)
+    .catch(error => console.log(error));
+
+  updateChart(priceData, chartDiv, minPriceValue, maxPriceValue);
+}
+
+function updateChart(data, chartDiv, minPriceValue, maxPriceValue) {
   console.log(data);
+  chartDiv.classed("loading", false);
   // Add average label
   const avg = _
     .mean(data)
     .toLocaleString("en-US", { style: "currency", currency: "USD" });
-  priceFilterDiv
+  chartDiv
     .append("p")
     .attr("class", "avg")
     .append("em")
@@ -78,7 +131,7 @@ function initChart(data, priceFilterDiv, minPriceValue, maxPriceValue) {
     .domain(x.domain())
     .thresholds(x.ticks(29))(data);
 
-  const svg = priceFilterDiv
+  const svg = chartDiv
     .append("svg")
     .attr("width", width)
     .attr("height", height);
@@ -127,7 +180,7 @@ function initChart(data, priceFilterDiv, minPriceValue, maxPriceValue) {
 
   // Add the range slider
   const stepSize = bins[0].x1 - bins[0].x0; // get the first bin size
-  priceFilterDiv
+  chartDiv
     .append("div")
     .style("width", width - margin.right)
     .attr("id", "slider");
@@ -178,20 +231,22 @@ function initChart(data, priceFilterDiv, minPriceValue, maxPriceValue) {
   });
 }
 
-if (document.querySelector("body").classList.contains("search")) {
-  const priceFilterDiv = d3.select(".minmax");
+// if (document.querySelector("body").classList.contains("search")) {
+//   const priceFilterDiv = d3.select(".minmax");
 
-  const url = window.location.href;
-  const jsonUrl =
-    url
-      .replace("search", "jsonsearch")
-      .replace("apa/", "apa?")
-      .replace(/&(min_price)=\d*/, "")
-      .replace(/&(max_price)=\d*/, "") + "&map=1";
-  var minPriceValue = url.match(/(min_price=)(\d*)/);
-  var maxPriceValue = url.match(/(max_price=)(\d*)/);
+//   const url = window.location.href;
+//   const jsonUrl =
+//     url
+//       .replace("search", "jsonsearch")
+//       .replace("apa/", "apa?")
+//       .replace(/&(min_price)=\d*/, "")
+//       .replace(/&(max_price)=\d*/, "") + "&map=1";
+//   var minPriceValue = url.match(/(min_price=)(\d*)/);
+//   var maxPriceValue = url.match(/(max_price=)(\d*)/);
 
-  getData(jsonUrl)
-    .then(data => initChart(data, priceFilterDiv, minPriceValue, maxPriceValue))
-    .catch(error => console.log(error));
-}
+//   getData(jsonUrl)
+//     .then(data => initChart(data, priceFilterDiv, minPriceValue, maxPriceValue))
+//     .catch(error => console.log(error));
+// }
+
+export { getData, initChart, addBlankChartContainer, addCreateChartBtn };

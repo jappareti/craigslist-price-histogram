@@ -2,11 +2,34 @@
   margin-bottom: 25px;
 }
 
-p.avg {
+.cl-extension-chart.loading p.loading,
+.cl-extension-chart.loading .create-price-chart-btn {
+  display: block;
+}
+
+p.loading {
+  display: none;
+}
+
+p.avg,
+p.loading {
   margin: 2px auto;
 }
-p.avg em {
+p.avg em,
+p.loading em {
   font-weight: normal;
   font-size: 80%;
   font-style: italic;
+}
+
+.create-price-chart-btn {
+  display: block;
+  cursor: pointer;
+  font-size: 80%;
+  display: block;
+  padding: 4px 0px;
+  color: #00e;
+}
+.create-price-chart-btn.clicked {
+  display: none;
 }
