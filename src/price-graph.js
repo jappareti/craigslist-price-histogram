@@ -104,11 +104,22 @@ async function initChart() {
     .then(data => data)
     .catch(error => console.log(error));
 
-  updateChart(priceData, chartDiv, minPriceValue, maxPriceValue);
+  updateChart(
+    priceData,
+    chartDiv,
+    priceFilterDiv,
+    minPriceValue,
+    maxPriceValue
+  );
 }
 
-function updateChart(data, chartDiv, minPriceValue, maxPriceValue) {
-  console.log(data);
+function updateChart(
+  data,
+  chartDiv,
+  priceFilterDiv,
+  minPriceValue,
+  maxPriceValue
+) {
   chartDiv.classed("loading", false);
   // Add average label
   const avg = _
@@ -230,23 +241,5 @@ function updateChart(data, chartDiv, minPriceValue, maxPriceValue) {
     });
   });
 }
-
-// if (document.querySelector("body").classList.contains("search")) {
-//   const priceFilterDiv = d3.select(".minmax");
-
-//   const url = window.location.href;
-//   const jsonUrl =
-//     url
-//       .replace("search", "jsonsearch")
-//       .replace("apa/", "apa?")
-//       .replace(/&(min_price)=\d*/, "")
-//       .replace(/&(max_price)=\d*/, "") + "&map=1";
-//   var minPriceValue = url.match(/(min_price=)(\d*)/);
-//   var maxPriceValue = url.match(/(max_price=)(\d*)/);
-
-//   getData(jsonUrl)
-//     .then(data => initChart(data, priceFilterDiv, minPriceValue, maxPriceValue))
-//     .catch(error => console.log(error));
-// }
 
 export { getData, initChart, addBlankChartContainer, addCreateChartBtn };
